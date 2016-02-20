@@ -12,3 +12,7 @@ set show-all-if-ambiguous on
 
 # show filenames using LS_COLORS
 set colored-stats on
+
+# word navigation
+"\e\e[C": forward-word
+"\e\e[D": backward-word

@@ -13,7 +13,7 @@ syntax on
 filetype plugin on
 
 " maximum lenght of inserted line (it's broken if wider)
-setlocal textwidth=78
+"setlocal textwidth=98
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -49,7 +49,7 @@ set tabstop=4
 " number of space for each step of autoindent
 set shiftwidth=4
 " convert tabs to spaces
-set expandtab
+"set expandtab
 " see help
 set smarttab
 " indent = multiple of shiftwidth
@@ -234,7 +234,7 @@ endfunc
 noremap <F6> :call ToggleMouse()<cr>
 
 " show tabs and trailing spaces
-set list
+"set list
 " characters to use
 set listchars=tab:→\ ,trail:·,extends:»,precedes:«
 
@@ -254,6 +254,7 @@ nnoremap <silent> <leader>m :marks<cr>
 nnoremap <silent> <leader>b :ls<cr>
 
 " autocomplete list for command mode
+set wildmode=longest,list,full
 set wildmenu
 set wildcharm=<C-i>
 set wildignore+=*.class,*.jar,*/.git/*,*/.hg/*,*.DS_Store,*/build/*,*/ecbuild/*

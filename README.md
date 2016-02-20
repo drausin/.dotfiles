@@ -13,7 +13,7 @@ the 1st time to get some python-related tools.
 ### Other stuff that's worth installing, but not handled here
 
 * [Homebrew](http://brew.sh/) (remember to install `coreutils`, `findutils`,
-  `gawk`, `gnu-sed`, `screen`, `python3`, `bash`, ...)
+  `gawk`, `gnu-sed`, `screen`, `python3`, `bash`, `htop`, ...)
 * [f.lux](http://justgetflux.com/)
 * [`ssh-installkeys`](http://www.catb.org/~esr/ssh-installkeys/) or
   `ssh-copy-id` ([man page](http://linux.die.net/man/1/ssh-copy-id))

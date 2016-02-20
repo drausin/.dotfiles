@@ -160,9 +160,9 @@ alias ??=pydoc2
 alias csv="awk -vFPAT='([^,]+)|(\"[^\"]+\")'"
 alias eclipse='/Applications/eclipse/Eclipse.app/Contents/MacOS/eclipse'
 alias fix-mbp-camera='sudo killall VDCAssistant'
-alias grep='grep -E --color=auto -n -I'
-alias gw='./gradlew --daemon --info'
-alias fgrep='fgrep --color=auto -n -I'
+alias grep='grep --color=auto -I'
+alias gw='./gradlew --daemon'
+alias fgrep='fgrep --color=auto -I'
 alias ipy='ipython --no-confirm-exit'
 alias ipy2='ipython2 --no-confirm-exit'
 alias ipy3='ipython3 --no-confirm-exit'
@@ -199,7 +199,7 @@ export HISTFILESIZE=100000
 export HISTSIZE=100000
 export GRADLE_OPTS=-Xmx2g
 [[ -x /usr/libexec/java_home ]] &&
-    export JAVA_HOME=$(/usr/libexec/java_home -v '1.7')
+    export JAVA_HOME=$(/usr/libexec/java_home -v '1.8')
 
 # use gnu coreutils on Mac (and use the right man pages)
 export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
@@ -226,11 +226,14 @@ export WORKON_HOME=~/.virtualenvs
 
 if hash brew 2>/dev/null; then
     # for MacOS
-    BASH_COMPLETION=$(brew --prefix)/share/bash-completion/bash_completion
+    BASH_COMPLETION=$(brew --prefix)/etc/bash-completion
     Z=$(brew --prefix)/etc/profile.d/z.sh
     ((BASH_MAJOR_VERSION > 3)) && [[ -f "$BASH_COMPLETION" ]] &&
         . "$BASH_COMPLETION"
     [[ -f "$Z" ]] && . "$Z"
+    GIT_COMPLETION=$(brew --prefix)/etc/bash_completion.d/git-completion.bash
+    ((BASH_MAJOR_VERSION > 3)) && [[ -f "$GIT_COMPLETION" ]] &&
+        . "$GIT_COMPLETION"
 fi
 
 # use virtualenvwrapper, if available...
@@ -244,14 +247,6 @@ fi
 bind 'set match-hidden-files off'
 bind C-w:backward-kill-word
 stty stop '' # disable ^S
-
-envfile="$HOME/.gpg-agent-info"
-if [[ -e "$envfile" ]] && kill -0 $(awk -F: '/GPG_AGENT_INFO/ {print $2}' "$envfile") 2>/dev/null; then
-    . "$envfile"
-else
-    eval "$(gpg-agent --daemon --write-env-file "$envfile")"
-fi
-export GPG_AGENT_INFO
 
 too-long() {
     local pfad=${PWD/#$HOME/\~}
@@ -285,7 +280,7 @@ branch="\[\e[1;36m\]\$(git-branch)\[\e[0m\]"
 root="\\$"
 # TODO(alexis): refactor PS1 logic at some point.
 # e.g. ✓ 16:33 alexis @ alexis in ~/.dotfiles (master ±) $
-PS1=" $check $time $user @ $host in $dir$branch $root "
+PS1=" $user @ $host in $dir$branch $root "
 
 stitle() {
     echo -ne "\033]1;${1:-$(hostname -s)}\033\\"
