@@ -9,6 +9,12 @@ set encoding=utf-8
 " enable syntax highlighting
 syntax on
 
+" reload files changed outside vim
+set autoread
+
+" enable matchit plugin which ships with vim and greatly enhances '%'
+runtime macros/matchit.vim
+
 " let vim detect the type of the current file
 filetype plugin on
 
@@ -33,6 +39,11 @@ set smartcase
 
 " obvious?
 set background=dark
+
+" no bell
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
+
 
 " show line numbers
 if version >= 704
@@ -68,6 +79,8 @@ augroup indentgroup
     autocmd FileType haskell setlocal shiftwidth=2
     autocmd FileType javascript setlocal tabstop=2
     autocmd FileType javascript setlocal shiftwidth=2
+    autocmd FileType markdown setlocal tabstop=2
+    autocmd FileType markdown setlocal shiftwidth=2
     autocmd FileType ruby setlocal tabstop=2
     autocmd FileType ruby setlocal shiftwidth=2
     autocmd BufRead,BufNewFile,BufWrite *.gradle setlocal filetype=groovy
@@ -108,6 +121,9 @@ nnoremap gk k
 
 " c'mon use the 'normal' Y
 nnoremap Y y$
+
+" make copying work the way it does in the rest of the world
+vnoremap <C-C> "*y
 
 " no backup when overwritting a file
 set nobackup
@@ -167,6 +183,11 @@ nnoremap <C-tab> :tabnext<cr>
 nnoremap <C-S-tab> :tabprevious<cr>
 inoremap <C-tab> <esc>:tabnext<cr>
 inoremap <C-S-tab> <esc>:tabprevious<cr>
+
+nnoremap <F2> :set nonumber!<CR>
+nnoremap <F3> :NERDTreeToggle<CR>
+nnoremap <F4> :TagbarToggle<CR>
+
 
 " no need for scrollbars
 set guioptions-=rL
