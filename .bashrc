@@ -178,6 +178,7 @@ alias reload='history -n'
 alias tree='tree -C'
 alias venv=mkvirtualenv
 alias vi=vim
+alias vim=/usr/local/bin/vim
 
 # tz are hard!
 alias fr='TZ=Europe/Paris date'
