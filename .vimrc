@@ -110,6 +110,9 @@ augroup END
 " pwd = directory of current file
 set autochdir
 
+" make copying work the way it does in the rest of the world
+vnoremap <C-C> "*y
+
 " disable entering ex mode through Q
 nnoremap Q <nop>
 
@@ -121,9 +124,6 @@ nnoremap gk k
 
 " c'mon use the 'normal' Y
 nnoremap Y y$
-
-" make copying work the way it does in the rest of the world
-vnoremap <C-C> "*y
 
 " no backup when overwritting a file
 set nobackup
