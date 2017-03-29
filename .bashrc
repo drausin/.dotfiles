@@ -215,6 +215,13 @@ export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
 export PATH="/usr/local/opt/grep/bin/:$PATH"
 export PATH="/usr/local/opt/findutils/bin/:$PATH"
 export PATH="/usr/local/bin:$PATH"
+export PATH="/Users/drausin/git/github/arcanist/bin:$PATH"
+
+export GOROOT="/usr/local/go"
+export GOPATH="$HOME/.go"
+export PATH="$GOROOT/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
+
 
 export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 export PYTHONSTARTUP=~/.pythonrc.py
@@ -279,9 +286,8 @@ host="\[\e[1;34m\]\h\[\e[0m\]"
 dir="\[\e[1;32m\]\$(too-long)\[\e[0m\]"
 branch="\[\e[1;36m\]\$(git-branch)\[\e[0m\]"
 root="\\$"
-# TODO(alexis): refactor PS1 logic at some point.
-# e.g. ✓ 16:33 alexis @ alexis in ~/.dotfiles (master ±) $
-PS1=" $user @ $host in $dir$branch $root "
+#PS1=" $user @ $host in $dir$branch $root "
+PS1=" $dir$branch $root "
 
 stitle() {
     echo -ne "\033]1;${1:-$(hostname -s)}\033\\"
@@ -293,3 +299,6 @@ stitle() {
 ((BASH_MAJOR_VERSION < 4)) && (
     echo -n $'\nBash < 4.x; some features '
     echo $'(e.g. advanced autocompletion) won\'t be available.\n') || true
+
+export NVM_DIR="/Users/drausin/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm

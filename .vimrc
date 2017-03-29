@@ -62,7 +62,7 @@ set shiftwidth=4
 " convert tabs to spaces
 "set expandtab
 " see help
-set smarttab
+"set smarttab
 " indent = multiple of shiftwidth
 set shiftround
 
@@ -79,8 +79,8 @@ augroup indentgroup
     autocmd FileType haskell setlocal shiftwidth=2
     autocmd FileType javascript setlocal tabstop=2
     autocmd FileType javascript setlocal shiftwidth=2
-    autocmd FileType markdown setlocal tabstop=2
-    autocmd FileType markdown setlocal shiftwidth=2
+    autocmd FileType markdown setlocal shiftwidth=4
+    autocmd FileType markdown setlocal tabstop=4
     autocmd FileType ruby setlocal tabstop=2
     autocmd FileType ruby setlocal shiftwidth=2
     autocmd BufRead,BufNewFile,BufWrite *.gradle setlocal filetype=groovy
@@ -253,6 +253,8 @@ function! ToggleMouse()
     endif
 endfunc
 noremap <F6> :call ToggleMouse()<cr>
+nnoremap <F5> :setl noai nocin nosi inde=<cr>
+
 
 " show tabs and trailing spaces
 "set list
@@ -388,6 +390,9 @@ if version >= 703
     " when encrypting any file, use the much stronger blowfish algorithm
     set cryptmethod=blowfish
 endif
+
+" Vim Markdown
+let g:vim_markdown_folding_disabled = 1
 
 " Let Pathogen magic happen
 execute pathogen#infect()

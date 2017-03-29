@@ -1,6 +1,6 @@
 ### How to deploy these config files
 
-    git clone --recursive https://github.com/Alexis-D/.dotfiles.git
+    git clone --recursive https://github.com/drausin/.dotfiles.git
     cd .dotfiles
     . deploy.sh
 
@@ -15,6 +15,9 @@ the 1st time to get some python-related tools.
 * [Homebrew](http://brew.sh/) (remember to install `coreutils`, `findutils`,
   `gawk`, `gnu-sed`, `screen`, `python3`, `bash`, `htop`, ...)
 * [f.lux](http://justgetflux.com/)
+* [Sourcetree](https://www.sourcetreeapp.com)
+* [Dropbox](https://www.dropbox.com/)
+* [1password](https://agilebits.com)
 * [`ssh-installkeys`](http://www.catb.org/~esr/ssh-installkeys/) or
   `ssh-copy-id` ([man page](http://linux.die.net/man/1/ssh-copy-id))
 * [`sshfs`](http://fuse.sourceforge.net/sshfs.html)
@@ -32,8 +35,6 @@ the 1st time to get some python-related tools.
 
     brew tap homebrew/dupes
     brew tap homebrew/versions
-    brew install caskroom/cask/brew-cask
 
     # --with-default-names
-    brew install bash homebrew/versions/bash-completion2 coreutils distribution findutils gawk git gnu-sed gnu-tar homebrew/dupes/grep homebrew/dupes/gzip netcat python python3 q pv homebrew/dupes/screen ssh-copy-id the_silver_searcher tofrodos tree unrar watch youtube-dl z
-    brew cask install caffeine flux gpg2 intellij-idea-ce karabiner mou pass pinentry-mac pycharm-ce seil spectacle
+    brew install bash homebrew/versions/bash-completion2 coreutils distribution findutils gawk git gnu-sed gnu-tar homebrew/dupes/grep homebrew/dupes/gzip netcat python python3 q pv homebrew/dupes/screen

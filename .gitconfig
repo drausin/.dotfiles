@@ -1,6 +1,6 @@
 [user]
-    name = Drausin Wulsin
-    email = daedalus2718@gmail.com
+	name = Drausin Wulsin
+	email = daedalus2718@gmail.com
 [color]
     diff = auto
     status = auto
@@ -30,9 +30,10 @@
     remotes = remote -v
     tags = tag -l
     unstage = reset HEAD
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 [core]
     editor = vim
-    excludesfile = ~/.cvsignore
+	excludesfile = /Users/drausin/.gitignore
 [merge]
     tool = vimdiff
     ff = false
@@ -59,3 +60,5 @@
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+[commit]
+	template = /Users/drausin/.stCommitMsg

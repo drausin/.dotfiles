@@ -3,3 +3,7 @@
 .config/gtk-2.0/
 .config/xm1/
 .vim/autoload/pathogen.vim
+
+# Intellij files
+.idea/
+*.iml
