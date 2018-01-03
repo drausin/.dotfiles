@@ -178,7 +178,9 @@ alias reload='history -n'
 alias tree='tree -C'
 alias venv=mkvirtualenv
 alias vi=vim
-alias vim=/usr/local/bin/vim
+if [[ -f /usr/local/bin/vim ]]; then
+    alias vim=/usr/local/bin/vim
+fi
 
 # tz are hard!
 alias fr='TZ=Europe/Paris date'
@@ -218,7 +220,7 @@ export PATH="/usr/local/bin:$PATH"
 export PATH="/Users/drausin/git/github/arcanist/bin:$PATH"
 
 export GOROOT="/usr/local/go"
-export GOPATH="$HOME/.go"
+export GOPATH=${GOPATH:-"$HOME/.go"}
 export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
@@ -244,6 +246,20 @@ if hash brew 2>/dev/null; then
         . "$GIT_COMPLETION"
 fi
 
+if which kubectl 2&>/dev/null; then
+    source <(kubectl completion bash)
+fi
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/usr/local/google-cloud-sdk/path.bash.inc' ]; then 
+	source '/usr/local/google-cloud-sdk/path.bash.inc'; 
+fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/usr/local/google-cloud-sdk/completion.bash.inc' ]; then 
+	source '/usr/local/google-cloud-sdk/completion.bash.inc'; 
+fi
+
 # use virtualenvwrapper, if available...
 [[ -f /usr/local/bin/virtualenvwrapper.sh ]] &&
     . /usr/local/bin/virtualenvwrapper.sh
@@ -267,7 +283,7 @@ too-long() {
 
 git-branch() {
     local plusminus=+-
-    ((BASH_MAJOR_VERSION > 3)) && plusminus=$'\u00b1'
+    ((BASH_MAJOR_VERSION > 3)) && plusminus=$(echo -e '\u00b1')
     local dirty=$(
         [[ $(git status --porcelain 2>/dev/null) != '' ]] &&
         echo -n " $plusminus")
@@ -287,7 +303,7 @@ dir="\[\e[1;32m\]\$(too-long)\[\e[0m\]"
 branch="\[\e[1;36m\]\$(git-branch)\[\e[0m\]"
 root="\\$"
 #PS1=" $user @ $host in $dir$branch $root "
-PS1=" $dir$branch $root "
+PS1=" $host: $dir$branch $root "
 
 stitle() {
     echo -ne "\033]1;${1:-$(hostname -s)}\033\\"
