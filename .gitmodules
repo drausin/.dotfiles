@@ -64,3 +64,11 @@
 [submodule ".vim/bundle/vim-fetch"]
 	path = .vim/bundle/vim-fetch
 	url = https://github.com/kopischke/vim-fetch.git
+[submodule ".vim/bundle/vim-markdown"]
+	path = .vim/bundle/vim-markdown
+	url = https://github.com/plasticboy/vim-markdown.git
+	branch = master
+[submodule ".vim/bundle/vim-go"]
+	path = .vim/bundle/vim-go
+	url = https://github.com/fatih/vim-go.git
+	branch = master

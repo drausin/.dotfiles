@@ -53,63 +53,6 @@ list() {
     fi
 }
 
-bump() {
-    if [[ $# -ne 1 ]]; then
-        return 1
-    elif ! git rev-parse 2>/dev/null; then
-        return 2
-    fi
-
-    git fetch  # fetch to get the most recent tags
-    local currentVersion=$(git tag
-        | egrep '^v\d+.\d+.\d+$'
-        | sed 's/^v//'
-        | sort -V
-        | tail -n 1)
-
-    case $1 in
-        major)
-            local newVersion=$(echo "$currentVersion"
-                | awk -F. '{ printf "%d.0.0", $1 + 1 }') ;;
-
-        minor)
-            local newVersion=$(echo "$currentVersion"
-                | awk -F. '{ printf "%d.%d.0", $1, $2 + 1 }') ;;
-
-        patch)
-            local newVersion=$(echo "$currentVersion"
-                | awk -F. '{ printf "%d.%d.%d", $1, $2, $3 + 1 }') ;;
-
-        *) return 3 ;;
-    esac
-
-    git checkout develop &&
-    git pull --rebase &&
-    git checkout master &&
-    git pull --rebase &&
-    git merge --no-ff -m "Update to $newVersion" develop &&
-    git tag "v$newVersion" &&
-    git push --tags &&
-    git push &&
-    git checkout develop &&
-    git merge --ff master &&
-    git push &&
-    echo &&
-    echo "Successfully bumped version to $newVersion"
-}
-
-java6() {
-    JAVA_HOME=$(/usr/libexec/java_home -v '1.6') "$@"
-}
-
-java7() {
-    JAVA_HOME=$(/usr/libexec/java_home -v '1.7') "$@"
-}
-
-java8() {
-    JAVA_HOME=$(/usr/libexec/java_home -v '1.8') "$@"
-}
-
 # Less Colors for Man Pages
 export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
 export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
@@ -119,36 +62,12 @@ export LESS_TERMCAP_so=$'\E[1;31m'        # begin standout-mode - info box
 export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
-popen() {
-    qlmanage -p "$1" &>/dev/null &
-}
-
-nowrap() {
-    cut -c1-$COLUMNS
-}
-
-root() {
-    cd "$(git rev-parse --show-toplevel)"
-}
-
 # http://stackoverflow.com/a/16178979/2813687
 color() (set -o pipefail; "$@" 2>&1>&3 | sed $'s,.*,\e[31m&\e[m,' >&2)3>&1
 
 # tz2tz <LocalDateTime> <fromTz> <toTz>
 tz2tz() {
     TZ=$3 gdate --date "TZ=\"$2\" ${1/T/ }" -Iseconds
-}
-
-idea() {
-    open *.ipr
-}
-
-sum() {
-    awk 'BEGIN { s = 0 } { s += $1 } END { print s }'
-}
-
-tmp() {
-    cd "$(mktemp -d)"
 }
 
 alias ....='cd ../../..'
@@ -181,6 +100,9 @@ alias vi=vim
 if [[ -f /usr/local/bin/vim ]]; then
     alias vim=/usr/local/bin/vim
 fi
+if [[ -f /Applications/MacVim.app/Contents/MacOS/Vim ]]; then
+    alias vim=/Applications/MacVim.app/Contents/MacOS/Vim
+fi
 
 # tz are hard!
 alias fr='TZ=Europe/Paris date'
@@ -201,8 +123,6 @@ export HISTTIMEFORMAT='%F %T - '
 export HISTFILESIZE=100000
 export HISTSIZE=100000
 export GRADLE_OPTS=-Xmx2g
-[[ -x /usr/libexec/java_home ]] &&
-    export JAVA_HOME=$(/usr/libexec/java_home -v '1.8')
 
 # use gnu coreutils on Mac (and use the right man pages)
 export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
@@ -217,13 +137,11 @@ export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
 export PATH="/usr/local/opt/grep/bin/:$PATH"
 export PATH="/usr/local/opt/findutils/bin/:$PATH"
 export PATH="/usr/local/bin:$PATH"
-export PATH="/Users/drausin/git/github/arcanist/bin:$PATH"
 
 export GOROOT="/usr/local/go"
 export GOPATH=${GOPATH:-"$HOME/.go"}
 export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
-
 
 export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 export PYTHONSTARTUP=~/.pythonrc.py
@@ -237,10 +155,8 @@ export WORKON_HOME=~/.virtualenvs
 if hash brew 2>/dev/null; then
     # for MacOS
     BASH_COMPLETION=$(brew --prefix)/etc/bash-completion
-    Z=$(brew --prefix)/etc/profile.d/z.sh
     ((BASH_MAJOR_VERSION > 3)) && [[ -f "$BASH_COMPLETION" ]] &&
         . "$BASH_COMPLETION"
-    [[ -f "$Z" ]] && . "$Z"
     GIT_COMPLETION=$(brew --prefix)/etc/bash_completion.d/git-completion.bash
     ((BASH_MAJOR_VERSION > 3)) && [[ -f "$GIT_COMPLETION" ]] &&
         . "$GIT_COMPLETION"
@@ -311,6 +227,13 @@ stitle() {
 
 # only for ssh/non-iTerm
 [[ "$TERM_PROGRAM" != "iTerm.app" ]] && stitle
+
+# Set CLICOLOR if you want Ansi Colors in iTerm2 
+export CLICOLOR=1
+
+# Set colors to match iTerm2 Terminal Colors
+export TERM=xterm-256color
+
 
 ((BASH_MAJOR_VERSION < 4)) && (
     echo -n $'\nBash < 4.x; some features '
