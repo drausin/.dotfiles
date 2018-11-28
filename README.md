@@ -18,9 +18,7 @@ Vim plugins are managed using Pathogen (see
 
 ```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew tap homebrew/dupes
-brew tap homebrew/versions
-brew install bash homebrew/versions/bash-completion2 coreutils findutils gawk git gnu-sed gnu-tar homebrew/dupes/grep homebrew/dupes/gzip netcat python python3 homebrew/dupes/screen
+brew install bash bash-completion2 coreutils findutils gawk git gnu-sed gnu-tar grep gzip netcat python python3 screen
 
 sudo easy_install pip
 sudo pip install virtualenv virtualenvwrapper
