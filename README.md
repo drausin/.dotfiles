@@ -15,5 +15,4 @@ Vim plugins are managed using Pathogen (see
 ```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew install bash bash-completion2 coreutils findutils gawk git gnu-sed gnu-tar grep gzip netcat python3 screen tmux
-sudo easy_install pip3
 ```
