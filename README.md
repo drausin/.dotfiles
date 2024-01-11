@@ -1,7 +1,10 @@
 ### How to deploy these config files
 
-    git clone --recursive https://github.com/drausin/.dotfiles.git
-    cd .dotfiles
+```bash
+git clone --recursive https://github.com/drausin/.dotfiles.git
+cd .dotfiles
+./deploy.sh
+```
 
 #### Other stuff for OSX
 
