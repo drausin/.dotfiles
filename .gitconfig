@@ -1,67 +1,62 @@
 [user]
-	name = Drausin Wulsin
-	email = daedalus2718@gmail.com
-[color]
-    diff = auto
-    status = auto
-    branch = auto
+    name = Drausin Wulsin
+    email = drausin.wulsin@arena-ai.com
+
 [alias]
     br = branch
     ci = commit
     co = checkout
     df = diff
+    lg = log --graph --decorate --pretty=oneline --abbrev-commit
     last = log -1 HEAD
     me = merge
     pop = stash pop
     st = status -s
-
-    edit-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; vim -p `f`"
-    add-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; git add `f`"
-    forget = update-index --assume-unchanged
-    unforget = update-index --no-assume-unchanged
-    l = log --graph --all --date=relative\
-        --pretty=format:'%C(cyan)%h%Creset %s %C(green)[%an/%cr]%Creset%C(red)%d%Creset'
-    update-all-submodules = submodule foreach git pull origin master
-
-    amend = commit --amend
-    squash = commit --amend -C HEAD
-    branches = branch -va
-    drop-last = reset --soft HEAD^
-    remotes = remote -v
-    tags = tag -l
-    unstage = reset HEAD
-    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     branch-name = rev-parse --abbrev-ref HEAD
     po = "!git push origin $(git branch-name)"
+
+[rerere]
+    enabled = true
+
+[color]
+    ui = true
+
 [core]
     editor = vim
-	excludesfile = /Users/drausin/.gitignore
-[merge]
-    tool = vimdiff
-    ff = false
+    excludesfile = ~/.gitignore_global
+    autocrlf = input
+
+[push]
+    default = simple
+
 [pull]
     default = current
     ff = only
-[push]
-	default = simple
-[rerere]
-    enabled = true
+[commit]
+    # Sign commits using GPG
+    # gpgsign = true
+
 [diff]
+    tool = vimdiff
     algorithm = patience
+
+[merge]
+    tool = vimdiff
+    conflictstyle = diff3
+
 [credential]
-    helper = cache
+    helper = cache --timeout=3600
+
 [branch]
     autosetuprebase = always
+
+[pager]
+    branch = false
+
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	required = true
-	process = git-lfs filter-process
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
-[commit]
-	template = /Users/drausin/.stCommitMsg
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+
