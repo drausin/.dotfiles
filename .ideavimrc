@@ -1,7 +1,0 @@
-source ~/.vimrc
-set scrolloff=0
-set visualbell
-set noerrorbells
-nnoremap ,o :action OptimizeImports<cr>
-nnoremap ,r :action ReformatCode<cr>
-nnoremap ,c :action RenameElement<cr>
