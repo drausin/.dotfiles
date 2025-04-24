@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -105,8 +105,6 @@ source $ZSH/oh-my-zsh.sh
 
 alias vim="nvim"
 
-export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
-
 # tmux per-pain history
 if [[ -n "$TMUX" ]]; then
   export HISTFILE="$HOME/.zsh_history_tmux_$(tmux display -p '#{pane_id}' | tr -d %)"
@@ -133,6 +131,10 @@ else
     fi
 fi
 unset __conda_setup
+
+if [ -f "/usr/local/lib/miniconda3/etc/profile.d/mamba.sh" ]; then
+    . "/usr/local/lib/miniconda3/etc/profile.d/mamba.sh"
+fi
 # <<< conda initialize <<<
 
 
