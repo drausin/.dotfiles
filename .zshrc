@@ -81,12 +81,8 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+# Editor
+export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
@@ -105,7 +101,25 @@ source $ZSH/oh-my-zsh.sh
 
 alias vim="nvim"
 
-# tmux per-pain history
+# Tool aliases
+alias cat='bat --paging=never'
+alias md='glow -p'
+alias mdp='tmux popup -w 80% -h 80% -E "glow -p"'
+alias lg='lazygit'
+
+# GitHub-flavored markdown preview server
+# Usage: grip-serve README.md, then SSH tunnel: ssh -L 6419:localhost:6419 ...
+grip-serve() { grip "$1" 0.0.0.0:6419 & }
+
+# fzf integration (keybindings: Ctrl+R history, Ctrl+T files, Alt+C cd)
+if command -v fzf &>/dev/null; then
+    eval "$(fzf --zsh 2>/dev/null)" || {
+        # Fallback for older fzf versions
+        [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+    }
+fi
+
+# tmux per-pane history
 if [[ -n "$TMUX" ]]; then
   export HISTFILE="$HOME/.zsh_history_tmux_$(tmux display -p '#{pane_id}' | tr -d %)"
 fi
