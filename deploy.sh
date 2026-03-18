@@ -11,14 +11,18 @@ echo "=== Installing CLI tools ==="
 bash "$DOTFILES_DIR/install-tools.sh"
 
 # ---------------------------------------------------------------------------
-# 2. Copy dotfiles to $HOME
+# 2. Symlink dotfiles to $HOME
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Deploying dotfiles ==="
 for file in .[^.]*; do
     if [[ "$file" != ".git" && "$file" != ".config" && "$file" != ".gitignore" ]]; then
-        cp -a "$file" "$HOME"
-        echo "  copying $file"
+        target="$HOME/$file"
+        source="$DOTFILES_DIR/$file"
+        # Remove existing file/symlink so ln doesn't fail
+        [[ -e "$target" || -L "$target" ]] && rm -f "$target"
+        ln -s "$source" "$target"
+        echo "  linked $file -> $source"
     fi
 done
 
@@ -30,13 +34,17 @@ echo "=== Setting up Neovim ==="
 mkdir -p ~/.config/nvim
 
 # Remove old init.vim if present (replaced by init.lua)
-if [[ -f ~/.config/nvim/init.vim ]]; then
+if [[ -f ~/.config/nvim/init.vim && ! -L ~/.config/nvim/init.vim ]]; then
     echo "  removing old init.vim"
     rm ~/.config/nvim/init.vim
 fi
 
-cp .config/nvim/init.lua ~/.config/nvim/init.lua
-echo "  copied init.lua"
+# Symlink init.lua
+target="$HOME/.config/nvim/init.lua"
+source="$DOTFILES_DIR/.config/nvim/init.lua"
+[[ -e "$target" || -L "$target" ]] && rm -f "$target"
+ln -s "$source" "$target"
+echo "  linked init.lua -> $source"
 
 # Bootstrap lazy.nvim if not already installed
 LAZY_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/lazy/lazy.nvim"

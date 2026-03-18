@@ -49,6 +49,7 @@ FZF_VERSION="0.70.0"
 RIPGREP_VERSION="15.1.0"
 FD_VERSION="10.4.2"
 LAZYGIT_VERSION="0.60.0"
+NODE_VERSION="22.14.0"
 
 # ---------------------------------------------------------------------------
 # glow — terminal markdown renderer
@@ -168,6 +169,41 @@ else
     cp entr "$BIN_DIR/entr"
     chmod +x "$BIN_DIR/entr"
     cd - >/dev/null
+fi
+
+# ---------------------------------------------------------------------------
+# Node.js — JavaScript runtime (required by pyright-langserver, etc.)
+# Naming: node-vVERSION-linux-x64.tar.xz (strip 1 into ~/.local/lib/)
+# ---------------------------------------------------------------------------
+NODE_ARCH="x64"
+[[ "$ARCH" == "aarch64" ]] && NODE_ARCH="arm64"
+NODE_DIR="$HOME/.local/lib/node-v${NODE_VERSION}-linux-${NODE_ARCH}"
+
+echo "[node]"
+if [[ "$(installed_version node)" == "$NODE_VERSION" ]]; then
+    echo "  Already at v${NODE_VERSION}, skipping."
+else
+    echo "  Downloading Node.js v${NODE_VERSION} ..."
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz" \
+        -o "$TMP_DIR/node.tar.xz"
+    mkdir -p "$HOME/.local/lib"
+    tar -xJf "$TMP_DIR/node.tar.xz" -C "$HOME/.local/lib"
+    ln -sf "$NODE_DIR/bin/node" "$BIN_DIR/node"
+    ln -sf "$NODE_DIR/bin/npm"  "$BIN_DIR/npm"
+    ln -sf "$NODE_DIR/bin/npx"  "$BIN_DIR/npx"
+fi
+
+# ---------------------------------------------------------------------------
+# pyright — Python type checker / LSP (requires node)
+# ---------------------------------------------------------------------------
+echo "[pyright]"
+if command -v pyright-langserver &>/dev/null; then
+    echo "  Already installed, skipping."
+else
+    echo "  Installing pyright via npm ..."
+    "$BIN_DIR/npm" install -g --prefix "$NODE_DIR" pyright
+    ln -sf "$NODE_DIR/bin/pyright-langserver" "$BIN_DIR/pyright-langserver"
+    ln -sf "$NODE_DIR/bin/pyright"             "$BIN_DIR/pyright"
 fi
 
 # ---------------------------------------------------------------------------

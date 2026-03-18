@@ -1,6 +1,6 @@
 [user]
     name = Drausin Wulsin
-    email = daedalus2718@gmail.com
+    email = drausin@genesistherapeutics.ai
 
 [alias]
     br = branch
@@ -70,3 +70,8 @@
     required = true
 
 
+[http]
+	proxy = http://squid-proxy:3128
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

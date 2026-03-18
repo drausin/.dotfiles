@@ -9,6 +9,22 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- ---------------------------------------------------------------------------
+-- Clipboard — OSC 52 (works over SSH through tmux to iTerm2)
+-- ---------------------------------------------------------------------------
+local osc52 = require("vim.ui.clipboard.osc52")
+vim.g.clipboard = {
+    name = "OSC 52",
+    copy = {
+        ["+"] = osc52.copy("+"),
+        ["*"] = osc52.copy("*"),
+    },
+    paste = {
+        ["+"] = osc52.paste("+"),
+        ["*"] = osc52.paste("*"),
+    },
+}
+
+-- ---------------------------------------------------------------------------
 -- Options
 -- ---------------------------------------------------------------------------
 vim.o.number = true
@@ -194,14 +210,42 @@ require("lazy").setup({
         end,
     },
 
-    -- ── File explorer ──────────────────────────────────────────────────
+    -- ── File explorer (buffer-style) ───────────────────────────────────
     {
         "stevearc/oil.nvim",
         keys = {
-            { "<leader>e", "<cmd>Oil<CR>", desc = "File explorer" },
+            { "<leader>e", "<cmd>Oil<CR>", desc = "File explorer (oil)" },
         },
         config = function()
             require("oil").setup()
+        end,
+    },
+
+    -- ── File tree (sidebar) ────────────────────────────────────────────
+    {
+        "nvim-neo-tree/neo-tree.nvim",
+        branch = "v3.x",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "MunifTanjim/nui.nvim",
+        },
+        keys = {
+            { "<leader>t", "<cmd>Neotree toggle<CR>", desc = "File tree" },
+            { "<leader>T", "<cmd>Neotree reveal<CR>", desc = "File tree (reveal current)" },
+        },
+        config = function()
+            require("neo-tree").setup({
+                filesystem = {
+                    follow_current_file = { enabled = true },
+                    filtered_items = {
+                        hide_dotfiles = false,
+                        hide_gitignored = false,
+                    },
+                },
+                window = {
+                    width = 35,
+                },
+            })
         end,
     },
 
