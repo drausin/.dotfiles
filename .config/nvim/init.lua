@@ -292,6 +292,18 @@ require("lazy").setup({
 })
 
 -- ---------------------------------------------------------------------------
+-- Markdown concealment (hide link URLs unless cursor is on that line)
+-- ---------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "markdown",
+    callback = function()
+        vim.treesitter.start()
+        vim.wo.conceallevel = 2
+        vim.wo.concealcursor = ""  -- reveal concealed text on cursor line
+    end,
+})
+
+-- ---------------------------------------------------------------------------
 -- Diagnostics navigation
 -- ---------------------------------------------------------------------------
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
