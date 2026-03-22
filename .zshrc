@@ -99,7 +99,7 @@ export EDITOR='nvim'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias vim="nvim"
+alias vim="https_proxy=http://squid-proxy:3128 nvim"
 
 # Tool aliases
 alias cat='bat --paging=never'
@@ -121,12 +121,8 @@ if command -v fzf &>/dev/null; then
     }
 fi
 
-# tmux per-pane history
-if [[ -n "$TMUX" ]]; then
-  export HISTFILE="$HOME/.zsh_history_tmux_$(tmux display -p '#{pane_id}' | tr -d %)"
-fi
-setopt inc_append_history   # Keep: appends to each pane's own file
-unsetopt share_history      # Disable global sharing across sessions
+setopt inc_append_history   # append immediately rather than on shell exit
+setopt share_history        # share history across all sessions
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/drausin/google-cloud-sdk/path.zsh.inc' ]; then . '/home/drausin/google-cloud-sdk/path.zsh.inc'; fi

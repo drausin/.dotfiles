@@ -145,5 +145,5 @@ do
     . $s
 done
 
-conda activate main-env
+conda activate cofolding
 # --------------------------------------------------

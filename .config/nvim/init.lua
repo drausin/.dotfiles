@@ -83,6 +83,8 @@ require("lazy").setup({
         config = function()
             vim.o.background = "dark"
             vim.cmd.colorscheme("gruvbox")
+            -- Suppress red highlighting of bare underscores in markdown
+            vim.api.nvim_set_hl(0, "markdownError", {})
         end,
     },
 
@@ -94,6 +96,11 @@ require("lazy").setup({
             { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Find files" },
             { "<leader>fg", "<cmd>Telescope live_grep<CR>",  desc = "Live grep" },
             { "<leader>fb", "<cmd>Telescope buffers<CR>",    desc = "Buffers" },
+        },
+        opts = {
+            defaults = {
+                find_command = { "fd", "--type", "f", "--hidden", "--exclude", ".git" },
+            },
         },
     },
 
