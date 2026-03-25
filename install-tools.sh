@@ -50,6 +50,8 @@ RIPGREP_VERSION="15.1.0"
 FD_VERSION="10.4.2"
 LAZYGIT_VERSION="0.60.0"
 NODE_VERSION="22.14.0"
+NEOVIM_VERSION="0.11.6"
+TREESITTER_VERSION="0.24.7"
 
 # ---------------------------------------------------------------------------
 # glow — terminal markdown renderer
@@ -169,6 +171,47 @@ else
     cp entr "$BIN_DIR/entr"
     chmod +x "$BIN_DIR/entr"
     cd - >/dev/null
+fi
+
+# ---------------------------------------------------------------------------
+# neovim — text editor
+# Naming: nvim-linux-x86_64.tar.gz (full install to ~/.local/)
+# ---------------------------------------------------------------------------
+NVIM_ARCH="x86_64"
+[[ "$ARCH" == "aarch64" ]] && NVIM_ARCH="aarch64"
+
+echo "[neovim]"
+if [[ "$(installed_version nvim)" == "$NEOVIM_VERSION" ]]; then
+    echo "  Already at v${NEOVIM_VERSION}, skipping."
+else
+    echo "  Downloading Neovim v${NEOVIM_VERSION} ..."
+    curl -fsSL "https://github.com/neovim/neovim/releases/download/v${NEOVIM_VERSION}/nvim-linux-${NVIM_ARCH}.tar.gz" \
+        -o "$TMP_DIR/nvim.tar.gz"
+    mkdir -p "$TMP_DIR/nvim"
+    tar xzf "$TMP_DIR/nvim.tar.gz" -C "$TMP_DIR/nvim" --strip-components=1
+    cp "$TMP_DIR/nvim/bin/nvim" "$BIN_DIR/nvim"
+    cp -r "$TMP_DIR/nvim/lib" "$HOME/.local/"
+    cp -r "$TMP_DIR/nvim/share" "$HOME/.local/"
+    chmod +x "$BIN_DIR/nvim"
+fi
+
+# ---------------------------------------------------------------------------
+# tree-sitter CLI — required by nvim-treesitter to build parsers
+# Naming: tree-sitter-linux-x64.gz (single binary, gzipped)
+# ---------------------------------------------------------------------------
+TS_ARCH="x64"
+[[ "$ARCH" == "aarch64" ]] && TS_ARCH="arm64"
+
+echo "[tree-sitter]"
+if [[ "$(installed_version tree-sitter)" == "$TREESITTER_VERSION" ]]; then
+    echo "  Already at v${TREESITTER_VERSION}, skipping."
+else
+    echo "  Downloading tree-sitter v${TREESITTER_VERSION} ..."
+    curl -fsSL "https://github.com/tree-sitter/tree-sitter/releases/download/v${TREESITTER_VERSION}/tree-sitter-linux-${TS_ARCH}.gz" \
+        -o "$TMP_DIR/tree-sitter.gz"
+    gunzip -f "$TMP_DIR/tree-sitter.gz"
+    cp "$TMP_DIR/tree-sitter" "$BIN_DIR/tree-sitter"
+    chmod +x "$BIN_DIR/tree-sitter"
 fi
 
 # ---------------------------------------------------------------------------

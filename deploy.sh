@@ -11,7 +11,19 @@ echo "=== Installing CLI tools ==="
 bash "$DOTFILES_DIR/install-tools.sh"
 
 # ---------------------------------------------------------------------------
-# 2. Symlink dotfiles to $HOME
+# 2. Oh My Zsh (must be installed before symlinking .zshrc)
+# ---------------------------------------------------------------------------
+echo ""
+echo "=== Setting up Oh My Zsh ==="
+if [[ -d "$HOME/.oh-my-zsh" ]]; then
+    echo "  Oh My Zsh already installed."
+else
+    echo "  Installing Oh My Zsh ..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
+# ---------------------------------------------------------------------------
+# 3. Symlink dotfiles to $HOME
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Deploying dotfiles ==="
@@ -27,7 +39,7 @@ for file in .[^.]*; do
 done
 
 # ---------------------------------------------------------------------------
-# 3. Neovim: migrate to init.lua + lazy.nvim
+# 4. Neovim: migrate to init.lua + lazy.nvim
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Setting up Neovim ==="
@@ -54,7 +66,7 @@ if [[ ! -d "$LAZY_DIR" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 4. TPM (Tmux Plugin Manager)
+# 5. TPM (Tmux Plugin Manager)
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Setting up TPM ==="

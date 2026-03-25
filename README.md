@@ -6,9 +6,18 @@ cd .dotfiles
 ./deploy.sh
 ```
 
-#### Other stuff for OSX
+`deploy.sh` will:
+1. Install CLI tools (neovim, tree-sitter, bat, delta, fzf, ripgrep, fd, lazygit, etc.) to `~/.local/bin/`
+2. Install Oh My Zsh
+3. Symlink dotfiles to `$HOME`
+4. Set up Neovim with lazy.nvim
+5. Set up TPM (Tmux Plugin Manager)
 
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew install neovim tmux python@3.12
-```
+#### Prerequisites
+
+- Linux: `zsh`, `git`, `curl`, `gcc` (for building treesitter parsers)
+- macOS: install via Homebrew first:
+  ```bash
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  brew install neovim tmux python@3.12
+  ```
