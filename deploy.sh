@@ -66,7 +66,27 @@ if [[ ! -d "$LAZY_DIR" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 5. TPM (Tmux Plugin Manager)
+# 5. Persistent SSH agent (systemd user service)
+# ---------------------------------------------------------------------------
+echo ""
+echo "=== Setting up SSH agent service ==="
+mkdir -p ~/.config/systemd/user
+target="$HOME/.config/systemd/user/ssh-agent.service"
+source="$DOTFILES_DIR/.config/systemd/user/ssh-agent.service"
+[[ -e "$target" || -L "$target" ]] && rm -f "$target"
+ln -s "$source" "$target"
+echo "  linked ssh-agent.service -> $source"
+systemctl --user daemon-reload
+systemctl --user enable ssh-agent.service
+if systemctl --user is-active --quiet ssh-agent.service; then
+    echo "  ssh-agent already running."
+else
+    systemctl --user start ssh-agent.service
+    echo "  ssh-agent started."
+fi
+
+# ---------------------------------------------------------------------------
+# 6. TPM (Tmux Plugin Manager)
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Setting up TPM ==="
@@ -89,3 +109,5 @@ echo "  1. tmux source ~/.tmux.conf       (reload tmux config)"
 echo "  2. prefix + I                      (install TPM plugins)"
 echo "  3. nvim                            (lazy.nvim auto-installs plugins)"
 echo "  4. :checkhealth                    (verify neovim setup)"
+echo "  5. ssh-keygen -t ed25519 && ssh-add ~/.ssh/id_ed25519  (generate key, add to agent)"
+echo "  6. Add public key to GitHub: Settings > SSH keys"
