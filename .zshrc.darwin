@@ -19,7 +19,9 @@ for _conda_prefix in "${CONDA_CANDIDATES[@]}"; do
             fi
         fi
         unset __conda_setup
-        [ -f "$_conda_prefix/etc/profile.d/mamba.sh" ] && . "$_conda_prefix/etc/profile.d/mamba.sh"
+        if [ -x "$_conda_prefix/bin/mamba" ]; then
+            eval "$("$_conda_prefix/bin/mamba" shell hook --shell zsh 2>/dev/null)"
+        fi
         break
     fi
 done
