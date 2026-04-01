@@ -1,17 +1,70 @@
 #!/bin/bash
 set -euo pipefail
 
-# Install pre-built CLI tools to ~/.local/bin/
+# Install pre-built CLI tools.
+# macOS: uses Homebrew.  Linux: downloads binaries to ~/.local/bin/.
 # Idempotent: skips tools already at the expected version.
 
+OS="$(uname -s)"   # Darwin or Linux
+ARCH="$(uname -m)" # arm64 / x86_64 / aarch64
+
+# ============================================================================
+# macOS — delegate to Homebrew
+# ============================================================================
+if [[ "$OS" == "Darwin" ]]; then
+    if ! command -v brew &>/dev/null; then
+        echo "Homebrew not found. Install it first: https://brew.sh"
+        exit 1
+    fi
+
+    BREW_PACKAGES=(
+        glow
+        bat
+        git-delta
+        fzf
+        ripgrep
+        fd
+        lazygit
+        entr
+        neovim
+        tree-sitter
+        node
+        pyright
+    )
+
+    echo "=== Installing tools via Homebrew ==="
+    for pkg in "${BREW_PACKAGES[@]}"; do
+        if brew list --formula "$pkg" &>/dev/null; then
+            echo "  $pkg already installed."
+        else
+            echo "  Installing $pkg ..."
+            brew install "$pkg"
+        fi
+    done
+
+    # grip (Python package)
+    echo "[grip]"
+    if command -v grip &>/dev/null; then
+        echo "  Already installed, skipping."
+    else
+        echo "  Installing grip via pip ..."
+        pip install --quiet grip
+    fi
+
+    echo ""
+    echo "All tools installed via Homebrew."
+    exit 0
+fi
+
+# ============================================================================
+# Linux — download pre-built binaries to ~/.local/bin/
+# ============================================================================
 BIN_DIR="$HOME/.local/bin"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 mkdir -p "$BIN_DIR"
 
-# Detect architecture
-ARCH="$(uname -m)"
 case "$ARCH" in
     x86_64)  ;;
     aarch64) ;;
@@ -55,13 +108,12 @@ TREESITTER_VERSION="0.24.7"
 
 # ---------------------------------------------------------------------------
 # glow — terminal markdown renderer
-# Naming: glow_VERSION_Linux_x86_64.tar.gz (flat, strip 0)
 # ---------------------------------------------------------------------------
 echo "[glow]"
 if [[ "$(installed_version glow)" == "$GLOW_VERSION" ]]; then
     echo "  Already at v${GLOW_VERSION}, skipping."
 else
-    GLOW_ARCH="$ARCH"  # x86_64 or aarch64->arm64
+    GLOW_ARCH="$ARCH"
     [[ "$ARCH" == "aarch64" ]] && GLOW_ARCH="arm64"
     install_from_tarball glow \
         "https://github.com/charmbracelet/glow/releases/download/v${GLOW_VERSION}/glow_${GLOW_VERSION}_Linux_${GLOW_ARCH}.tar.gz" \
@@ -70,7 +122,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # bat — syntax-highlighted cat
-# Naming: bat-vVERSION-x86_64-unknown-linux-gnu.tar.gz (strip 1)
 # ---------------------------------------------------------------------------
 echo "[bat]"
 if [[ "$(installed_version bat)" == "$BAT_VERSION" ]]; then
@@ -83,7 +134,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # delta — better git diffs
-# Naming: delta-VERSION-x86_64-unknown-linux-gnu.tar.gz (strip 1)
 # ---------------------------------------------------------------------------
 echo "[delta]"
 if [[ "$(installed_version delta)" == "$DELTA_VERSION" ]]; then
@@ -96,7 +146,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # fzf — fuzzy finder
-# Naming: fzf-VERSION-linux_amd64.tar.gz (flat, strip 0)
 # ---------------------------------------------------------------------------
 echo "[fzf]"
 if [[ "$(installed_version fzf)" == "$FZF_VERSION" ]]; then
@@ -111,8 +160,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # ripgrep (rg) — fast code search
-# Naming: ripgrep-VERSION-x86_64-unknown-linux-musl.tar.gz (strip 1)
-# Note: x86_64 only ships musl variant; aarch64 ships gnu
 # ---------------------------------------------------------------------------
 echo "[ripgrep]"
 if [[ "$(installed_version rg)" == "$RIPGREP_VERSION" ]]; then
@@ -127,7 +174,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # fd — fast file finder
-# Naming: fd-vVERSION-x86_64-unknown-linux-gnu.tar.gz (strip 1)
 # ---------------------------------------------------------------------------
 echo "[fd]"
 if [[ "$(installed_version fd)" == "$FD_VERSION" ]]; then
@@ -140,7 +186,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # lazygit — TUI git client
-# Naming: lazygit_VERSION_linux_x86_64.tar.gz (flat, strip 0)
 # ---------------------------------------------------------------------------
 echo "[lazygit]"
 if [[ "$(installed_version lazygit)" == "$LAZYGIT_VERSION" ]]; then
@@ -175,7 +220,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # neovim — text editor
-# Naming: nvim-linux-x86_64.tar.gz (full install to ~/.local/)
 # ---------------------------------------------------------------------------
 NVIM_ARCH="x86_64"
 [[ "$ARCH" == "aarch64" ]] && NVIM_ARCH="aarch64"
@@ -197,7 +241,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # tree-sitter CLI — required by nvim-treesitter to build parsers
-# Naming: tree-sitter-linux-x64.gz (single binary, gzipped)
 # ---------------------------------------------------------------------------
 TS_ARCH="x64"
 [[ "$ARCH" == "aarch64" ]] && TS_ARCH="arm64"
@@ -216,7 +259,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # Node.js — JavaScript runtime (required by pyright-langserver, etc.)
-# Naming: node-vVERSION-linux-x64.tar.xz (strip 1 into ~/.local/lib/)
 # ---------------------------------------------------------------------------
 NODE_ARCH="x64"
 [[ "$ARCH" == "aarch64" ]] && NODE_ARCH="arm64"

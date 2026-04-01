@@ -1,0 +1,4 @@
+# macOS-specific bash config
+
+# ls color support (macOS uses -G instead of --color=auto)
+alias ls='ls -G'

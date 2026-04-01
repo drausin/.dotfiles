@@ -1,0 +1,51 @@
+# Linux VM-specific zsh config
+
+# Proxy aliases (squid proxy on VM)
+alias vim="https_proxy=http://squid-proxy:3128 nvim"
+alias clean-ssh='export SSH_AUTH_SOCK=$(ls -t /tmp/ssh-**/* | head -1)'
+alias claude="http_proxy=http://squid-proxy:3128 https_proxy=http://squid-proxy:3128 CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --dangerously-skip-permissions --add-dir $HOME/git/genesistherapeutics/logbooks"
+
+# >>> conda initialize >>>
+__conda_setup="$('/usr/local/lib/miniconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/usr/local/lib/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/usr/local/lib/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/usr/local/lib/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+if [ -f "/usr/local/lib/miniconda3/etc/profile.d/mamba.sh" ]; then
+    . "/usr/local/lib/miniconda3/etc/profile.d/mamba.sh"
+fi
+# <<< conda initialize <<<
+
+# Genesis specific
+# ------------------------------------------
+export PYTHONPATH="/home/$USER/deep-affinity:$PYTHONPATH"
+
+function run_with_prod_db {
+    DB_URL=$PROD_DB_URL command "$@"
+}
+function rwp {
+    DB_URL=$PROD_DB_URL python "$@"
+}
+
+alias google-cloud-sdk.kubectl=$(which kubectl)
+function pod {
+    kubectl --kubeconfig $XDG_RUNTIME_DIR/ray_kubeconfigs/$1 get pods | grep $2
+}
+
+alias rst='rwp da/ray/scripts/rayctl.py'
+alias copy-job='rwp cloud_queue/cq_util.py view-job'
+
+for s in /usr/local/share/genesis/sh.d/*.sh; do
+    echo $s
+    . $s
+done
+
+conda activate cofolding
+# ------------------------------------------

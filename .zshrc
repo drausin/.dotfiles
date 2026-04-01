@@ -4,119 +4,28 @@ export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="robbyrussell"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
 # Editor
 export EDITOR='nvim'
 
-# Compilation flags
-# export ARCHFLAGS="-arch $(uname -m)"
-
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-alias vim="https_proxy=http://squid-proxy:3128 nvim"
-
 # Tool aliases
+alias vim="nvim"
 alias cat='bat --paging=never'
 alias md='glow -p'
 alias mdp='tmux popup -w 80% -h 80% -E "glow -p"'
 alias lg='lazygit'
-alias clean-ssh='export SSH_AUTH_SOCK=$(ls -t /tmp/ssh-**/* | head -1)'
-alias claude="http_proxy=http://squid-proxy:3128 https_proxy=http://squid-proxy:3128 CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --dangerously-skip-permissions --add-dir $HOME/git/genesistherapeutics/logbooks"
 
 # GitHub-flavored markdown preview server
-# Usage: grip-serve README.md, then SSH tunnel: ssh -L 6419:localhost:6419 ...
 grip-serve() { grip "$1" 0.0.0.0:6419 & }
 
 # fzf integration (keybindings: Ctrl+R history, Ctrl+T files, Alt+C cd)
 if command -v fzf &>/dev/null; then
     eval "$(fzf --zsh 2>/dev/null)" || {
-        # Fallback for older fzf versions
         [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
     }
 fi
@@ -124,61 +33,11 @@ fi
 setopt inc_append_history   # append immediately rather than on shell exit
 setopt share_history        # share history across all sessions
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/drausin/google-cloud-sdk/path.zsh.inc' ]; then . '/home/drausin/google-cloud-sdk/path.zsh.inc'; fi
+# Google Cloud SDK
+if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
 
-# The next line enables shell command completion for gcloud.
-if [ -f '/home/drausin/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/drausin/google-cloud-sdk/completion.zsh.inc'; fi
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/usr/local/lib/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/usr/local/lib/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/usr/local/lib/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/usr/local/lib/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-
-if [ -f "/usr/local/lib/miniconda3/etc/profile.d/mamba.sh" ]; then
-    . "/usr/local/lib/miniconda3/etc/profile.d/mamba.sh"
-fi
-# <<< conda initialize <<<
-
-
-# Genesis specific
-# ------------------------------------------
-export PYTHONPATH="/home/$USER/deep-affinity:$PYTHONPATH"
-
-function run_with_prod_db {
-    DB_URL=$PROD_DB_URL command "$@"
-}
-function rwp {
-  DB_URL=$PROD_DB_URL python "$@" # rwp mod/main.py {yaml} {args}
-}
-
-# checking specific pod status, mostly not needed for ml.
-# sometimes worth checking if a job is stalled on initializing for a long time
-alias google-cloud-sdk.kubectl=$(which kubectl)
-function pod {
-    kubectl --kubeconfig $XDG_RUNTIME_DIR/ray_kubeconfigs/$1 get pods | grep $2
-} # pod {cluster} {grep argument - i.e. 04-12-01-26-0909}
-
-# job management
-alias rst='rwp da/ray/scripts/rayctl.py' # rst status, rst delete {job id}, rst setprio {job id} prio
-alias copy-job='rwp cloud_queue/cq_util.py view-job' # copy-job {job id} to load the code state
-
-
-for s in /usr/local/share/genesis/sh.d/*.sh
-do
-    echo $s
-    . $s
-done
-
-conda activate cofolding
-
-# ------------------------------------------
+# Source OS-specific config
+_os_config="$HOME/.zshrc.$(uname -s | tr 'A-Z' 'a-z')"
+[[ -f "$_os_config" ]] && source "$_os_config"
+unset _os_config

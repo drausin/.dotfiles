@@ -70,8 +70,7 @@
     required = true
 
 
-[http]
-	proxy = http://squid-proxy:3128
+# [http] proxy and [credential] helper are set by deploy.sh per-OS
 [credential "https://github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = !/opt/homebrew/bin/gh auth git-credential

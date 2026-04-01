@@ -4,6 +4,8 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$DOTFILES_DIR"
 
+OS="$(uname -s)"  # Darwin or Linux
+
 # ---------------------------------------------------------------------------
 # 1. Install CLI tools
 # ---------------------------------------------------------------------------
@@ -28,7 +30,9 @@ fi
 echo ""
 echo "=== Deploying dotfiles ==="
 for file in .[^.]*; do
-    if [[ "$file" != ".git" && "$file" != ".config" && "$file" != ".gitignore" ]]; then
+    # Skip directories and special entries
+    [[ -d "$file" ]] && continue
+    if [[ "$file" != ".gitignore" ]]; then
         target="$HOME/$file"
         source="$DOTFILES_DIR/$file"
         # Remove existing file/symlink so ln doesn't fail
@@ -66,23 +70,29 @@ if [[ ! -d "$LAZY_DIR" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 5. Persistent SSH agent (systemd user service)
+# 5. Persistent SSH agent (Linux only — macOS has a built-in agent via launchd)
 # ---------------------------------------------------------------------------
-echo ""
-echo "=== Setting up SSH agent service ==="
-mkdir -p ~/.config/systemd/user
-target="$HOME/.config/systemd/user/ssh-agent.service"
-source="$DOTFILES_DIR/.config/systemd/user/ssh-agent.service"
-[[ -e "$target" || -L "$target" ]] && rm -f "$target"
-ln -s "$source" "$target"
-echo "  linked ssh-agent.service -> $source"
-systemctl --user daemon-reload
-systemctl --user enable ssh-agent.service
-if systemctl --user is-active --quiet ssh-agent.service; then
-    echo "  ssh-agent already running."
+if [[ "$OS" == "Linux" ]]; then
+    echo ""
+    echo "=== Setting up SSH agent service (systemd) ==="
+    mkdir -p ~/.config/systemd/user
+    target="$HOME/.config/systemd/user/ssh-agent.service"
+    source="$DOTFILES_DIR/.config/systemd/user/ssh-agent.service"
+    [[ -e "$target" || -L "$target" ]] && rm -f "$target"
+    ln -s "$source" "$target"
+    echo "  linked ssh-agent.service -> $source"
+    systemctl --user daemon-reload
+    systemctl --user enable ssh-agent.service
+    if systemctl --user is-active --quiet ssh-agent.service; then
+        echo "  ssh-agent already running."
+    else
+        systemctl --user start ssh-agent.service
+        echo "  ssh-agent started."
+    fi
 else
-    systemctl --user start ssh-agent.service
-    echo "  ssh-agent started."
+    echo ""
+    echo "=== SSH agent ==="
+    echo "  macOS: using built-in SSH agent (launchd). Skipping systemd setup."
 fi
 
 # ---------------------------------------------------------------------------
@@ -99,6 +109,29 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# 7. Git config — OS-specific overrides
+# ---------------------------------------------------------------------------
+echo ""
+echo "=== Configuring git (OS-specific) ==="
+if [[ "$OS" == "Linux" ]]; then
+    # VM uses squid proxy for HTTPS
+    git config --global http.proxy "http://squid-proxy:3128"
+    echo "  set http.proxy for Linux VM"
+else
+    # macOS — no proxy needed
+    git config --global --unset http.proxy 2>/dev/null || true
+    echo "  cleared http.proxy for macOS"
+fi
+
+# Credential helper — use gh wherever it is
+GH_PATH="$(command -v gh 2>/dev/null || true)"
+if [[ -n "$GH_PATH" ]]; then
+    git config --global 'credential.https://github.com.helper' ""
+    git config --global --add 'credential.https://github.com.helper' "!${GH_PATH} auth git-credential"
+    echo "  set credential helper to $GH_PATH"
+fi
+
+# ---------------------------------------------------------------------------
 # Done
 # ---------------------------------------------------------------------------
 echo ""
@@ -109,5 +142,9 @@ echo "  1. tmux source ~/.tmux.conf       (reload tmux config)"
 echo "  2. prefix + I                      (install TPM plugins)"
 echo "  3. nvim                            (lazy.nvim auto-installs plugins)"
 echo "  4. :checkhealth                    (verify neovim setup)"
-echo "  5. ssh-keygen -t ed25519 && ssh-add ~/.ssh/id_ed25519  (generate key, add to agent)"
+if [[ "$OS" == "Darwin" ]]; then
+    echo "  5. ssh-add --apple-use-keychain ~/.ssh/id_ed25519  (add key to macOS keychain)"
+else
+    echo "  5. ssh-keygen -t ed25519 && ssh-add ~/.ssh/id_ed25519  (generate key, add to agent)"
+fi
 echo "  6. Add public key to GitHub: Settings > SSH keys"
