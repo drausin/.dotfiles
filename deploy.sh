@@ -121,19 +121,13 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 8. Git config — OS-specific overrides
+# 8. Git config
 # ---------------------------------------------------------------------------
 echo ""
-echo "=== Configuring git (OS-specific) ==="
-if [[ "$OS" == "Linux" ]]; then
-    # VM uses squid proxy for HTTPS
-    git config --global http.proxy "http://squid-proxy:3128"
-    echo "  set http.proxy for Linux VM"
-else
-    # macOS — no proxy needed
-    git config --global --unset http.proxy 2>/dev/null || true
-    echo "  cleared http.proxy for macOS"
-fi
+echo "=== Configuring git ==="
+# Direct egress — no proxy needed on any platform
+git config --global --unset http.proxy 2>/dev/null || true
+echo "  cleared http.proxy"
 
 # Credential helper — use gh wherever it is
 GH_PATH="$(command -v gh 2>/dev/null || true)"
