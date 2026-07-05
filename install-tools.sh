@@ -286,7 +286,9 @@ if command -v pyright-langserver &>/dev/null; then
     echo "  Already installed, skipping."
 else
     echo "  Installing pyright via npm ..."
-    "$BIN_DIR/npm" install -g --prefix "$NODE_DIR" pyright
+    # npm's `#!/usr/bin/env node` shebang re-resolves node via PATH; force the
+    # freshly-installed node first so an old system node (e.g. v12) can't run it.
+    PATH="$NODE_DIR/bin:$PATH" "$NODE_DIR/bin/npm" install -g --prefix "$NODE_DIR" pyright
     ln -sf "$NODE_DIR/bin/pyright-langserver" "$BIN_DIR/pyright-langserver"
     ln -sf "$NODE_DIR/bin/pyright"             "$BIN_DIR/pyright"
 fi
