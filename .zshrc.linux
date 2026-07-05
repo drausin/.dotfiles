@@ -3,7 +3,7 @@
 # Proxy aliases (squid proxy on VM)
 alias vim="https_proxy=http://squid-proxy:3128 nvim"
 alias clean-ssh='export SSH_AUTH_SOCK=$(ls -t /tmp/ssh-**/* | head -1)'
-alias claude="http_proxy=http://squid-proxy:3128 https_proxy=http://squid-proxy:3128 CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --dangerously-skip-permissions --add-dir $HOME/git/genesistherapeutics/logbooks"
+alias claude="CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --dangerously-skip-permissions --add-dir $HOME/git/genesistherapeutics"
 
 # >>> conda initialize >>>
 __conda_setup="$('/usr/local/lib/miniconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
