@@ -125,15 +125,22 @@ fi
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Configuring git ==="
-# Direct egress — no proxy needed on any platform
-git config --global --unset http.proxy 2>/dev/null || true
+# Machine-local settings live in an untracked file that .gitconfig [include]s,
+# so per-OS paths never dirty the tracked .gitconfig (a symlink into the repo).
+LOCAL_GITCONFIG="$HOME/.gitconfig.local"
+
+# Direct egress — ensure no proxy lingers anywhere
+git config --global --unset-all http.proxy 2>/dev/null || true
+git config --file "$LOCAL_GITCONFIG" --unset-all http.proxy 2>/dev/null || true
 echo "  cleared http.proxy"
 
 # Credential helper — use gh wherever it is
 GH_PATH="$(command -v gh 2>/dev/null || true)"
 if [[ -n "$GH_PATH" ]]; then
-    git config --global 'credential.https://github.com.helper' ""
-    git config --global --add 'credential.https://github.com.helper' "!${GH_PATH} auth git-credential"
+    # --replace-all collapses any prior values (possibly multiple, from earlier
+    # runs) to a single empty entry that resets the helper chain, then append gh.
+    git config --file "$LOCAL_GITCONFIG" --replace-all 'credential.https://github.com.helper' ""
+    git config --file "$LOCAL_GITCONFIG" --add 'credential.https://github.com.helper' "!${GH_PATH} auth git-credential"
     echo "  set credential helper to $GH_PATH"
 fi
 

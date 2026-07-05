@@ -70,7 +70,8 @@
     required = true
 
 
-# [http] proxy and [credential] helper are set by deploy.sh per-OS
-[credential "https://github.com"]
-	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
+# Machine-local, deploy-managed settings (github credential helper, any proxy)
+# are written by deploy.sh to ~/.gitconfig.local (untracked) and included here,
+# so per-OS paths never land in this tracked file.
+[include]
+	path = ~/.gitconfig.local
