@@ -66,7 +66,19 @@ if [[ ! -d "$LAZY_DIR" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 5. Persistent SSH agent (systemd user service)
+# 5. htop config
+# ---------------------------------------------------------------------------
+echo ""
+echo "=== Setting up htop ==="
+mkdir -p ~/.config/htop
+target="$HOME/.config/htop/htoprc"
+source="$DOTFILES_DIR/.config/htop/htoprc"
+[[ -e "$target" || -L "$target" ]] && rm -f "$target"
+ln -s "$source" "$target"
+echo "  linked htoprc -> $source"
+
+# ---------------------------------------------------------------------------
+# 6. Persistent SSH agent (systemd user service)
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Setting up SSH agent service ==="
@@ -86,7 +98,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 6. TPM (Tmux Plugin Manager)
+# 7. TPM (Tmux Plugin Manager)
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Setting up TPM ==="

@@ -107,7 +107,7 @@ alias md='glow -p'
 alias mdp='tmux popup -w 80% -h 80% -E "glow -p"'
 alias lg='lazygit'
 alias clean-ssh='export SSH_AUTH_SOCK=$(ls -t /tmp/ssh-**/* | head -1)'
-alias claude="http_proxy=http://squid-proxy:3128 https_proxy=http://squid-proxy:3128 CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --dangerously-skip-permissions --add-dir $HOME/git/genesistherapeutics/logbooks"
+alias claude="CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --dangerously-skip-permissions --add-dir $HOME/git/genesistherapeutics"
 
 # GitHub-flavored markdown preview server
 # Usage: grip-serve README.md, then SSH tunnel: ssh -L 6419:localhost:6419 ...
