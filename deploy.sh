@@ -82,7 +82,19 @@ ln -s "$source" "$target"
 echo "  linked htoprc -> $source"
 
 # ---------------------------------------------------------------------------
-# 6. Persistent SSH agent (Linux only — macOS has a built-in agent via launchd)
+# 6. Claude Code global instructions
+# ---------------------------------------------------------------------------
+echo ""
+echo "=== Setting up Claude Code ==="
+mkdir -p ~/.claude
+target="$HOME/.claude/CLAUDE.md"
+source="$DOTFILES_DIR/.claude/CLAUDE.md"
+[[ -e "$target" || -L "$target" ]] && rm -f "$target"
+ln -s "$source" "$target"
+echo "  linked CLAUDE.md -> $source"
+
+# ---------------------------------------------------------------------------
+# 7. Persistent SSH agent (Linux only — macOS has a built-in agent via launchd)
 # ---------------------------------------------------------------------------
 if [[ "$OS" == "Linux" ]]; then
     echo ""
