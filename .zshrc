@@ -8,7 +8,30 @@ ZSH_THEME="robbyrussell"
 
 plugins=(git)
 
+# Static tab title instead of oh-my-zsh's default "user@host" (see below for
+# what replaces it) -- oh-my-zsh's auto-title fires on every precmd/preexec,
+# so it must be disabled before sourcing, not just overridden after.
+DISABLE_AUTO_TITLE=true
+
 source $ZSH/oh-my-zsh.sh
+
+# Set the terminal/tab title once per shell to a stable machine label.
+# Plain hostname is ambiguous on the GCP g4 fleet -- g4-96-1 is the literal
+# hostname of both the gilead and incyte boxes -- so on those VMs derive a
+# "g4-<project>" label from GCP project metadata instead (playground ->
+# g4-playground, gilead -> g4-gilead, incyte -> g4-incyte). Everything else
+# (laptop, old shared*/ml4g/gilead2/incyte1 VMs) keeps the plain hostname.
+_host="$(hostname -s)"
+if [[ "$_host" == g4-* ]]; then
+    _project="$(curl -s -m 1 -H 'Metadata-Flavor: Google' \
+        http://metadata.google.internal/computeMetadata/v1/project/project-id 2>/dev/null)"
+    TAB_TITLE="${_project/#genesis-/g4-}"
+    [[ -z "$TAB_TITLE" ]] && TAB_TITLE="$_host"
+else
+    TAB_TITLE="$_host"
+fi
+unset _host _project
+printf '\033]0;%s\007' "$TAB_TITLE"
 
 # Editor
 export EDITOR='nvim'
