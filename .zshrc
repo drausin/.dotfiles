@@ -33,6 +33,11 @@ fi
 unset _host _project
 printf '\033]0;%s\007' "$TAB_TITLE"
 
+# Prepend "user@machine-label" to the robbyrussell prompt (the theme itself
+# shows no host info, which is exactly the ambiguity problem above -- reuse
+# the same TAB_TITLE so the prompt and tab title always agree).
+PROMPT="%F{green}%n@${TAB_TITLE}%f ${PROMPT}"
+
 # Editor
 export EDITOR='nvim'
 
